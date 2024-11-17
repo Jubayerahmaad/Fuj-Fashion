@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Product Landing Page</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Fullscreen loader style */
+    #fullScreenLoader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      font-size: 24px;
+      z-index: 9999;
+      text-align: center; /* Centers text horizontally */
+    }
+  
+    /* Responsive font size for mobile devices */
+    @media (max-width: 768px) {
+      #fullScreenLoader span {
+        font-size: 18px; /* Smaller font size on mobile */
+      }
+    }
+  
+    /* For larger screens */
+    @media (min-width: 769px) {
+      #fullScreenLoader span {
+        font-size: 24px; /* Larger font size for desktop */
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 class="title">পাঞ্জাবির সাথে ৪৫০ টাকার টি-শার্ট ফ্রী</h1>
+      <p class="sub">১০০% কটন ফ্যাব্রিক, প্রিমিয়াম মানের ডিজাইন এবং বিশেষ অফারে মাত্র ১০৫০ টাকা!</p>
+    </header>
+    
+    <div class="product">
+      <img src="./image/panjabi1.webp" alt="পাঞ্জাবি" class="product-image">
+      <img src="./image/panjabi2.webp" alt="পাঞ্জাবি" class="product-image">
+      <img src="./image/panjabi3.webp" alt="পাঞ্জাবি" class="product-image">
+      <img src="./image/panjabi4.webp" alt="পাঞ্জাবি" class="product-image">
+    </div>
+
+    <div class="order-now">
+      <a href="#order-form" class="btn-order">অর্ডার করুন</a>
+    </div>
+
+    <section id="order-form" class="order-form">
+      <h2>আপনার অর্ডার করুন</h2>
+      <form id="orderForm" action="https://script.google.com/macros/s/AKfycbw0JOTKsCsDk2GcX-gVms7pEiasjlmrJL4p44UxxWPk_9u_-5JdjrbAA9k_b-dwGG93OA/exec" method="POST">
+        <div class="form-group">
+          <label for="customer-name">নাম</label>
+          <input type="text" id="name" name="name" placeholder="আপনার নাম লিখুন" required>
+        </div>
+        <div class="form-group">
+          <label for="customer-phone">ফোন নম্বর</label>
+          <input type="tel" id="phone" name="phone" placeholder="ফোন নম্বর লিখুন" required>
+          <span id="phoneWarning" style="color: red; display: none;"></span>
+        </div>
+        <div class="form-group">
+          <label for="address">ঠিকানা</label>
+          <textarea id="address" name="address" rows="3" placeholder="আপনার ঠিকানা লিখুন" required></textarea>
+        </div>
+        <button type="submit" class="btn-submit" id="submitButton">
+          অর্ডার কনফার্ম করুন
+        </button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Fullscreen Loader -->
+  <div id="fullScreenLoader">
+    <span>আপনার অর্ডাটি গ্রহন করা হচ্ছে দয়া করে অপেক্ষা করুন...</span>
+  </div>
+
+  <script>
+    const phoneInput = document.getElementById('phone');
+    const phoneWarning = document.getElementById('phoneWarning');
+    const fullScreenLoader = document.getElementById('fullScreenLoader');
+
+    // Clear the loader when the page is loaded (in case it's from the "thank you" page)
+    window.addEventListener('load', () => {
+      // Check if loader should be visible or not based on sessionStorage
+      if (sessionStorage.getItem('isSubmitting') === 'true') {
+        // If it's true, display the loader
+        fullScreenLoader.style.display = 'flex';
+      } else {
+        // Hide loader if coming back from the "thank you" page
+        fullScreenLoader.style.display = 'none';
+      }
+    });
+
+    phoneInput.addEventListener('input', function () {
+      const phoneValue = phoneInput.value;
+
+      // Check if input contains only digits
+      if (!/^\d*$/.test(phoneValue)) {
+        phoneWarning.textContent = 'শুধুমাত্র সংখ্যা ইনপুট করুন।';
+        phoneWarning.style.display = 'block';
+        phoneInput.value = phoneValue.replace(/\D/g, ''); // Remove non-digit characters
+        return;
+      }
+
+      // Check length of the phone number
+      if (phoneValue.length > 11) {
+        phoneWarning.textContent = '১১ ডিজিটের বেশি নম্বর ইনপুট করা যাবে না।';
+        phoneWarning.style.display = 'block';
+      } else if (phoneValue.length < 11 && phoneValue.length > 0) {
+        phoneWarning.textContent = '১১ ডিজিটের নাম্বার লিখুন।';
+        phoneWarning.style.display = 'block';
+      } else {
+        phoneWarning.style.display = 'none';
+      }
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const form = e.target;
+      const formData = new FormData(form);
+
+      // Final validation for phone number
+      if (phoneInput.value.length !== 11) {
+        phoneWarning.textContent = '১১ ডিজিটের সঠিক নাম্বার দিন।';
+        phoneWarning.style.display = 'block';
+        return;
+      }
+
+      // Save form data in localStorage
+      const customerData = {
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        address: formData.get('address')
+      };
+      localStorage.setItem('customerData', JSON.stringify(customerData));
+
+      // Disable the submit button and show loader
+      const submitButton = document.getElementById('submitButton');
+      submitButton.disabled = true;
+      submitButton.innerHTML = 'পাঠানো হচ্ছে...';
+
+      // Show the fullscreen loader
+      fullScreenLoader.style.display = 'flex';
+
+      // Set sessionStorage value to indicate the form submission process
+      sessionStorage.setItem('isSubmitting', 'true');
+
+      // Send data to Google Sheets in the background
+      fetch(form.action, {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (response.ok) {
+          // After successful submission, redirect to Thank You page
+          setTimeout(() => {
+            window.location.href = "/panjabi/thankyou.html";
+          }, 1000); // Delay to show loader for a bit before redirect
+        } else {
+          throw new Error('Error in submitting the form');
+        }
+      })
+      .catch((error) => {
+        console.error('Error while sending data to Google Sheets:', error);
+        // Re-enable the submit button and show error message
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'অর্ডার কনফার্ম করুন';
+        fullScreenLoader.style.display = 'none'; // Hide loader if error occurs
+        alert('ফর্ম সাবমিট করতে সমস্যা হয়েছে। আবার চেষ্টা করুন!');
+      });
+    });
+
+    // Clear the sessionStorage when the user leaves the page or reloads it
+    window.addEventListener('beforeunload', () => {
+      sessionStorage.removeItem('isSubmitting');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thank You</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Basic styling */
+    *{
+        font-family: "Hind Siliguri", sans-serif;}
+    body {
+        font-family: "Hind Siliguri", sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;  /* Aligns content to the top */
+      justify-content: flex-start;  /* Aligns content to the top */
+      height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 30px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 80%;
+      max-width: 600px;
+      margin-top: 20px; /* Adds some space from the top */
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #2d5e89;
+    }
+
+    p {
+      font-size: 1.2rem;
+      color: #333333;
+      margin-bottom: 20px;
+    }
+
+    .order-details {
+      background-color: #f0f0f0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .order-details p {
+      font-size: 1.1rem;
+      color: #555555;
+      margin: 10px 0;
+    }
+
+    .order-details p strong {
+      color: #2d5e89;
+    }
+
+    .btn-home {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 25px;
+      background-color: #2d5e89;
+      color: white;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border-radius: 5px;
+      transition: background-color 0.3s;
+    }
+
+    .btn-home:hover {
+      background-color: #1f3b55;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>ধন্যবাদ, আপনার অর্ডার গ্রহণ করা হয়েছে!</h1>
+    <p>আপনার অর্ডারের বিস্তারিত:</p>
+
+    <div class="order-details" id="orderDetails">
+      <!-- কাস্টমার ডেটা এখানে দেখানো হবে -->
+    </div>
+
+    <a href="/" class="btn-home">হোম পেইজে ফিরে যান</a>
+  </div>
+
+  <script>
+    // Retrieve customer data from localStorage
+    const customerData = JSON.parse(localStorage.getItem('customerData'));
+
+    // Display customer data in the orderDetails div
+    if (customerData) {
+      const orderDetails = document.getElementById('orderDetails');
+      orderDetails.innerHTML = `
+        <p><strong>নাম:</strong> ${customerData.name}</p>
+        <p><strong>ফোন নম্বর:</strong> ${customerData.phone}</p>
+        <p><strong>ঠিকানা:</strong> ${customerData.address}</p>
+      `;
+    } else {
+      document.getElementById('orderDetails').innerHTML = '<p>কোন ডেটা পাওয়া যায়নি।</p>';
+    }
+
+    // Clear localStorage after displaying the data
+    localStorage.removeItem('customerData');
+  </script>
+
+</body>
+</html>
